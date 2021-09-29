@@ -7,6 +7,11 @@ use App\Models\Officer;
 use Illuminate\Support\Facades\Validator;
 
 class OfficerController extends Controller {
+
+    public function show() {
+        return Officer::all();
+    }
+
     public function store(Request $request){
         $validator = Validator::make($request->all(),
             [

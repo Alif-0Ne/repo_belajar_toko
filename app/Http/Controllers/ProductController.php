@@ -7,6 +7,22 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller {
+
+    public function show() {
+        return Product::all();
+    }
+
+    public function detail($id) {
+        if (Product::where('id_product',$id)->exists()) {
+            $data_trs = product::where('product.id_product','=',$id)
+                                ->get();
+
+            return Response()->json($data_trs);
+        } else {
+            return Response()->json(['message' => 'tidak ditemukan']);
+        }
+    }
+
     public function store(Request $request){
         $validator = Validator::make($request->all(),
             [
@@ -20,7 +36,7 @@ class ProductController extends Controller {
             return Response()->json($validator->errors());
         }
 
-        $simpan = Products::create([
+        $simpan = Product::create([
             'name_product' => $request->name_product,
             'desc' =>$request->desc,
             'price' => $request->price

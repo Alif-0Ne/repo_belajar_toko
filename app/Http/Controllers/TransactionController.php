@@ -5,8 +5,31 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller {
+
+    public function show() {
+        $data = DB::table('transaction')
+            ->join('customers', 'customers.id_customers', '=', 'transaction.id_customers')
+            ->join('officer', 'officer.id_officer', '=', 'transaction.id_officer')
+            ->select('transaction.id_transaction', 'transaction.id_officer', 'transaction.id_customers', 'transaction.date')
+            ->get();
+        return Response()->json($data);
+    }
+
+    public function detail($id) {
+        if (Transaction::where('id_customers',$id)->exists()) {
+            $data_trs = transaction::join('customers', 'customers.id_customers', 'transaction.id_customers')
+                                    ->where('transaction.id_customers','=',$id)
+                                    ->get();
+
+            return Response()->json($data_trs);
+        } else {
+            return Response()->json(['message' => 'tidak ditemukan']);
+        }
+    }
+
     public function store(Request $request){
         $validator = Validator::make($request->all(),
             [

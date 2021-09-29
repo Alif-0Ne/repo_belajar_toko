@@ -26,9 +26,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/officer','OfficerController@show');
 Route::post('/officer','OfficerController@store');
+
+Route::get('/customers','CustomersController@show');
 Route::post('/customers','CustomersController@store');
+
+Route::get('/product','ProductController@show');
+Route::get('/product/{id}','ProductController@detail');
 Route::post('/product','ProductController@store');
+
+Route::get('/transaction','TransactionController@show');
+Route::get('/transaction/{id}','TransactionController@detail');
 Route::post('/transaction','TransactionController@store');
+
+Route::get('/det_transaction','Det_TransactionController@show');
+Route::get('/det_transaction/{id}','Det_TransactionController@detail');
 Route::post('/det_transaction','Det_TransactionController@store');
 
