@@ -59,4 +59,36 @@ class Det_TransactionController extends Controller {
             return Response()->json(['status'=>0]);
         }
     }
+
+    public function update($id, Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'id_transaction' => 'required',
+                'id_product' => 'required',
+                'qty' => 'required'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return Response()->json($validator->errors());
+        }
+
+        $id_product = $request->id_product;
+        $qty = $request->qty;
+        $harga = DB::table('product')->where('id_product', $id_product)->value('price');
+        $subtotal = $harga * $qty;
+
+        $ubah = Det_Transaction::WHERE('id_detail_transaction',$id)->update([
+            'id_transaction' => $request->id_transaction,
+            'id_product' => $request->id_product,
+            'qty' => $request->qty,
+            'subtotal' => $subtotal
+        ]);
+
+        if ($ubah) {
+            return Response()->json(['status'=>1]);
+        } else {
+            return Response()->json(['status'=>0]);
+        }
+    }
 }

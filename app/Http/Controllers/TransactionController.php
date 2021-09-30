@@ -19,10 +19,8 @@ class TransactionController extends Controller {
     }
 
     public function detail($id) {
-        if (Transaction::where('id_customers',$id)->exists()) {
-            $data_trs = transaction::join('customers', 'customers.id_customers', 'transaction.id_customers')
-                                    ->where('transaction.id_customers','=',$id)
-                                    ->get();
+        if (Transaction::where('id_transaction',$id)->exists()) {
+            $data_trs = transaction::where('id_transaction','=',$id)->get();
 
             return Response()->json($data_trs);
         } else {
@@ -50,6 +48,32 @@ class TransactionController extends Controller {
         ]);
 
         if ($simpan) {
+            return Response()->json(['status'=>1]);
+        } else {
+            return Response()->json(['status'=>0]);
+        }
+    }
+
+    public function update($id, Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'id_customers' => 'required',
+                'id_officer' => 'required',
+                'date' => 'required'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return Response()->json($validator->errors());
+        }
+
+        $ubah = Transaction::WHERE('id_transaction',$id)->update([
+            'id_customers' => $request->id_customers,
+            'id_officer' => $request->id_officer,
+            'date' => $request->date
+        ]);
+
+        if ($ubah) {
             return Response()->json(['status'=>1]);
         } else {
             return Response()->json(['status'=>0]);

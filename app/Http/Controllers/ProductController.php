@@ -14,8 +14,7 @@ class ProductController extends Controller {
 
     public function detail($id) {
         if (Product::where('id_product',$id)->exists()) {
-            $data_trs = product::where('product.id_product','=',$id)
-                                ->get();
+            $data_trs = product::where('id_product','=',$id)->get();
 
             return Response()->json($data_trs);
         } else {
@@ -43,6 +42,32 @@ class ProductController extends Controller {
         ]);
 
         if ($simpan) {
+            return Response()->json(['status'=>1]);
+        } else {
+            return Response()->json(['status'=>0]);
+        }
+    }
+
+    public function update($id, Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'name_product' => 'required',
+                'desc' => 'required',
+                'price' => 'required'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return Response()->json($validator->errors());
+        }
+
+        $ubah = Product::WHERE('id_product',$id)->update([
+            'name_product' => $request->name_product,
+            'desc' =>$request->desc,
+            'price' => $request->price
+        ]);
+
+        if ($ubah) {
             return Response()->json(['status'=>1]);
         } else {
             return Response()->json(['status'=>0]);
